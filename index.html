@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DarkFlame</title>
+    <script type="text/javascript" src="src/index.js"></script>
+    <script type="text/javascript" src="src/scene.js"></script>
+    <script type="text/javascript" src="src/item.js"></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script type="text/javascript">
+    let game = new DarkFlame(document.getElementById("canvas"));
+    let scene = new DarkFlame.Scene.Scene("scene", game);
+    game.push(scene);
+</script>
+</body>
+</html>
