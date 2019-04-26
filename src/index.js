@@ -1,3 +1,5 @@
+'bpo enable';
+
 let DarkFlame = (function () {
     class DarkFlameError extends Error {
         constructor(name, message) {

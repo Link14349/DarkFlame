@@ -1,5 +1,7 @@
 {
-  "plugins": [],
+  "plugins": [
+    "operator-fork"
+  ],
   "presets": [
     "babel-preset-es2016",
     "es2015",

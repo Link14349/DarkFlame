@@ -1,3 +1,5 @@
+'bpo enable';
+
 !function (DarkFlame) {
     let module = new DarkFlame.Module("Scene");// 新建包
 
