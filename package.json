@@ -1,0 +1,33 @@
+{
+  "name": "dark-flame",
+  "version": "1.0.0",
+  "description": "This is a 2D game render library.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qianduanXIAOHAOZI/DarkFlame.git"
+  },
+  "keywords": [
+    "2d",
+    "game",
+    "2d-game",
+    "render"
+  ],
+  "author": "yhzheng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qianduanXIAOHAOZI/DarkFlame/issues"
+  },
+  "homepage": "https://github.com/qianduanXIAOHAOZI/DarkFlame#readme",
+  "devDependencies": {
+    "babel-plugin-operator-fork": "0.0.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1"
+  }
+}
