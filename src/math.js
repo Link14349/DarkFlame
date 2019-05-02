@@ -19,12 +19,13 @@
     }
 
     /** todo 枚举类型 */
-    class Enum {
+    class Enum extends DarkFlame.Module.ModuleClass {
         /*
         * 使用方法:
         * let colors = new Enum(["RED", "WHITE", "BLACK"])
         */
         constructor(enums) {
+            super("enum");
             let n = 0;
             for (let i in enums) {
                 let v = enums[i];
@@ -45,8 +46,9 @@
 
     /** todo 提供数学意义上的集合类 */
         // {(token) | expr}
-    class MathSet {
+    class MathSet extends DarkFlame.Module.ModuleClass {
         constructor(token, expr) {
+            super("set");
             if (arguments.length == 1) {// 只有一个参数
                 let str = token;
                 str = str.trim();
@@ -54,7 +56,7 @@
                     str.length <= 2 ||
                     str[0] != "{" || str.last() != "}" // 不以'{'开头或不以'}'结尾
                 ) {
-                    console.error(new Error("Error 104: Illegal set string '" + str + "'"));
+                    console.error(new DarkFlame.DarkFlameError("math", "Error 104: Illegal set string '" + str + "'"));
                     return;
                 }
                 str = str.substring(1, str.length - 1);
@@ -62,7 +64,7 @@
 
                 let splitIndex = str.search(/\|/);
                 if (splitIndex < 0) {
-                    console.error(new Error("Error 104: Illegal set string '" + str + "'"));
+                    console.error(new DarkFlame.DarkFlameError("math", "Error 104: Illegal set string '" + str + "'"));
                     return;
                 }
 
@@ -103,11 +105,11 @@
 
                 // 检查类型
                 if (st != "[" && st != "(") {
-                    console.error(new Error("Error 103: Illegal interval identifier '" + st + "'"));
+                    console.error(new DarkFlame.DarkFlameError("math", "Error 103: Illegal interval identifier '" + st + "'"));
                     return;
                 }
                 if (et != "]" && et != ")") {
-                    console.error(new Error("Error 103: Illegal interval identifier '" + et + "'"));
+                    console.error(new DarkFlame.DarkFlameError("math", "Error 103: Illegal interval identifier '" + et + "'"));
                     return;
                 }
                 str = str.substring(1, str.length - 1);
@@ -129,11 +131,11 @@
                 et = type[1];
                 // 检查类型
                 if (st != "[" && st != "(") {
-                    console.error(new Error("Error 103: Illegal interval identifier '" + st + "'"));
+                    console.error(new DarkFlame.DarkFlameError("math", "Error 103: Illegal interval identifier '" + st + "'"));
                     return;
                 }
                 if (et != "]" && et != ")") {
-                    console.error(new Error("Error 103: Illegal interval identifier '" + et + "'"));
+                    console.error(new DarkFlame.DarkFlameError("math", "Error 103: Illegal interval identifier '" + et + "'"));
                     return;
                 }
                 if (st == "[") firstOp = "<=";
@@ -148,9 +150,10 @@
     }
 
     /** todo 向量类 */
-        // WARNING: %代表点积, *代表叉乘
-    class Vector {
+    // WARNING: %代表点积, *代表叉乘
+    class Vector extends DarkFlame.Module.ModuleClass {
         constructor(arr) {
+            super("Vector");
             this.array = [];
             if (arr.type && arr.type == "Vector") for (let i of arr.array) this.array.push(i);
             else for (let i of arr) this.array.push(i);
@@ -204,14 +207,14 @@
             return n;
         }
         // 点积
-        operatorMod(b) {
+        dot(b) {
             if (typeof b === "number") {
-                console.error(new Error("Error 102: Do not support scalar and vector for dot product operations"));
+                console.error(new DarkFlame.DarkFlameError("math", "Error 102: Do not support scalar and vector for dot product operations"));
                 return null;
             }
             if (b.type === "Vector") {
                 if (b.length != this.length) {
-                    console.error(new Error("Error 100: Vector size does not match"));
+                    console.error(new DarkFlame.DarkFlameError("math", "Error 100: Vector size does not match"));
                     return null;
                 }
                 let sum = 0;
@@ -221,7 +224,7 @@
                 return sum;
             }
         }
-        operatorAdd(b) {
+        add(b) {
             if (typeof b === "number") {
                 let tmp = new Vector([]);
                 tmp.array = tmp.array.concat(this.array);
@@ -232,7 +235,7 @@
             } else {
                 if (b.type === "Vector") {
                     if (b.length != this.length) {
-                        console.error(new Error("Error 100: Vector size does not match"));
+                        console.error(new DarkFlame.DarkFlameError("math", "Error 100: Vector size does not match"));
                         return null;
                     }
                     let v = [];
@@ -243,7 +246,7 @@
                 }
             }
         }
-        operatorSub(b) {
+        sub(b) {
             if (typeof b === "number") {
                 let tmp = new Vector([]);
                 tmp.array = tmp.array.concat(this.array);
@@ -254,7 +257,7 @@
             } else {
                 if (b.type === "Vector") {
                     if (b.length != this.length) {
-                        console.error(new Error("Error 100: Vector size does not match"));
+                        console.error(new DarkFlame.DarkFlameError("math", "Error 100: Vector size does not match"));
                         return null;
                     }
                     let v = [];
@@ -265,7 +268,7 @@
                 }
             }
         }
-        operatorDiv(b) {
+        div(b) {
             if (typeof b === "number") {
                 let tmp = new Vector([]);
                 tmp.array = tmp.array.concat(this.array);
@@ -274,11 +277,11 @@
                 }
                 return tmp;
             } else {
-                console.error(new Error("Error 102: Do not support scalar and vector for dot div operations"));
+                console.error(new DarkFlame.DarkFlameError("math", "Error 102: Do not support scalar and vector for dot div operations"));
                 return null;
             }
         }
-        operatorMul(b) {
+        mul(b) {
             if (typeof b === "number") {
                 let tmp = new Vector([]);
                 tmp.array = tmp.array.concat(this.array);
@@ -297,27 +300,14 @@
                     b = new Matrix(1, b.length, arr);
                     // console.log(a);
                     // console.log(b);
-                    return a * b;
+                    return a.mul(b);
                 }
                 if (b.type == "Matrix") {
                     let selfMatrix = new Matrix(this.length, 1, [this.array]);
                     // console.log(selfMatrix, b);
-                    let res = selfMatrix * b;
+                    let res = selfMatrix.mul(b);
                     return new Vector(res.array[0]);
                 }
-            }
-        }
-        operatorBinaryXor(b) {
-            if (typeof b === "number") {
-                console.error(new Error("Error 102: Do not support scalar and vector for dot product operations"));
-                return null;
-            }
-            if (b.type === "Vector") {
-                let res = this % b;
-                res /= this.mod();
-                res /= b.mod();
-                res = Math.acos(res);
-                return probably(res);
             }
         }
         trans(type) {
@@ -329,16 +319,16 @@
             }
         }
         norm() {
-            return this / this.mod();
+            return this.div(this.mod());
         }
         proj(u) {// 投影
             let v = this.norm();
-            let n = v * (u % v);
+            let n = v.mul(u.dot(v));
             return n / (v.mod() * v.mod());
         }
         operatorEqual(b) {
             if (b.length != this.length) {
-                console.error(new Error("Error 100: Vector size does not match"));
+                console.error(new DarkFlame.DarkFlameError("math", "Error 100: Vector size does not match"));
                 return null;
             }
             for (let i = 0; i < this.length; i++) {
@@ -399,25 +389,6 @@
         static Zero() {
             return new Vector3();
         }
-        // operatorMul(b) {
-        //     console.log(b);
-        //     if (typeof b === "number") {
-        //         let tmp = new Vector([]);
-        //         tmp.array = tmp.array.concat(this.array);
-        //         for (let i in this.array) {
-        //             tmp.array[i] *= b;
-        //         }
-        //         return tmp;
-        //     } else {
-        //         // 叉乘
-        //         // let m = new Matrix(3, 3, [
-        //         //     [new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1)]
-        //         // ]);
-        //         let a = new Matrix(this.length, 1, [this.array]);
-        //         console.log(a);
-        //         return null;
-        //     }
-        // }
     }
     class Vector4 extends Vector {
         constructor(x = 0, y = 0, z = 0, w = 1) {
@@ -458,8 +429,9 @@
     }
 
     /** todo 矩阵类 */
-    class Matrix {
+    class Matrix extends DarkFlame.Module.ModuleClass {
         constructor(w, h, fill = 0) {
+            super("Matrix");
             this.array = [];
             if (w.type && w.type == "Matrix") {// 复制构造函数
                 this.__w = w.w;
@@ -509,10 +481,10 @@
             this.array[i][j] = v;
             return this;
         }
-        operatorAdd(b) {
+        add(b) {
             // console.log(this.size() == b.size());
             if (this.size() != b.size()) {
-                console.error(new Error("Error 100: Matrix size does not match"));
+                console.error(new DarkFlame.DarkFlameError("math", "Error 100: Matrix size does not match"));
                 return null;
             }
             let c = new Matrix(this.w, this.h, this.array);
@@ -523,10 +495,10 @@
             }
             return c;
         }
-        operatorSub(b) {
+        sub(b) {
             // console.log(this.size() == b.size());
             if (this.size() != b.size()) {
-                console.error(new Error("Error 100: Matrix size does not match"));
+                console.error(new DarkFlame.DarkFlameError("math", "Error 100: Matrix size does not match"));
                 return null;
             }
             let c = new Matrix(this.w, this.h, this.array);
@@ -537,12 +509,13 @@
             }
             return c;
         }
-        operatorMul(b) {
+        mul(b) {
             // console.log(this.size() == b.size());
+            // console.log("mul: ", b);
             if (typeof b == "object") {
                 if (b.type == "Matrix") {
                     if (this.w != b.h) {
-                        console.error(new Error("Error 100: Matrix size does not match"));
+                        console.error(new DarkFlame.DarkFlameError("math", "Error 100: Matrix size does not match"));
                         return null;
                     }
                     let n = this.w;
@@ -556,6 +529,7 @@
                             c.array[i][j] = sum;
                         }
                     }
+                    // console.log("mul", c);
                     return c;
                 }
                 // if (b.type == "Vector") {
@@ -632,7 +606,8 @@
                 [0,              0            , 1, 0],
                 [0,              0            , 0, 1],
             ]);
-            return Mx * My * Mz;
+            // console.log(Mx.operatorMul);
+            return Mx.mul(My).mul(Mz);
         }
         static TransRotateInverse(s) {
             let Mx = new Matrix(4, 4, [
@@ -653,7 +628,7 @@
                 [0,              0,              1, 0],
                 [0,              0,              0, 1],
             ]);
-            return Mx * My * Mz;
+            return Mx.mul(My).mul(Mz);
         }
     }
     class Matrix2x2 extends Matrix {
@@ -676,16 +651,18 @@
         // 即: 起点, 终点, 方向
         // p(x, y, z) = p0 + v_ * t
         // t ∈ [-∞, +∞]
-    class Parmline2D {
+    class Parmline2D extends DarkFlame.Module.ModuleClass {
         constructor(v0, v1) {
+            super("Parmline2D");
             this.p0 = new Vector2(v0);
             this.p1 = new Vector2(v1);
             this.v = new Vector2(v1 - v0);
             this.v_ = this.v.norm();
         }
     }
-    class Parmline3D {
+    class Parmline3D extends DarkFlame.Module.ModuleClass {
         constructor(v0, v1) {
+            super("Parmline3D");
             this.p0 = new Vector3(v0);
             this.p1 = new Vector3(v1);
             this.v = new Vector3(v1 - v0);
@@ -698,8 +675,9 @@
         // a * (x - x0) + b * (y - y0) + c * (z - z0) = 0
         // 或
         // a * x + b * y + c * z + (-a * x0 - b * y0 - c * z0) = 0
-    class Plane3D {
+    class Plane3D extends DarkFlame.Module.ModuleClass {
         constructor(n, p0) {
+            super("Plane3D");
             if (arguments.length < 2) {
                 let p = n;
                 this.n = new Vector3(p.n);
@@ -784,7 +762,7 @@
             /
             (a * vx + b * vy + c * vz)
         ;
-        console.log(-(a * x0 + b * y0 + c * z0 + d));
+        // console.log(-(a * x0 + b * y0 + c * z0 + d));
         let x = x0 * vx * t;
         let y = y0 * vy * t;
         let z = z0 * vz * t;
@@ -808,121 +786,6 @@
         return new Vector3(x, y, z);
     }
 
-    /** todo 提供四元数类 */
-    class Quaternion extends See3D.moduleraryDefineObject {
-        constructor(q0 = 0, q1 = 0, q2 = 0, q3 = 0) {
-            super("Quaternion");
-            this.q0 = q0;
-            if (typeof q0 == "object" && arguments.length == 1) {// 复制构造函数
-                let q = q0;
-                this.q0 = q.q0;
-                this.qv = new Vector3(q.qv);
-            } else if (arguments.length == 2) {
-                this.qv = new Vector3(q1);
-            } else {
-                this.qv = new Vector3(q1, q2, q3);
-            }
-        }
-        operatorAdd(b) {
-            return new Quaternion(this.q0 + b.q0, this.qv + b.qv);
-        }
-        operatorSub(b) {
-            return new Quaternion(this.q0 - b.q0, this.qv - b.qv);
-        }
-        operatorMul(q) {
-            let p = this;
-            // let a = p.q0 * q.qv;
-            // let b = q.q0 * p.qv;
-            // let c = p.qv * q.qv;
-            let r = new Quaternion(
-                p.q0 * q.q0 - (p.qv % q.qv),
-                (q.qv * p.q0 + p.qv * q.q0 + p.qv * q.qv)
-            );
-            // console.log((p.q0 * q.qv + q.q0 * p.qv + p.qv * q.qv));
-            return r;
-        }
-        operatorDiv(b) {
-            if (typeof b == "number") {
-                let q = new Quaternion(this);
-                q.q0 /= b;
-                q.qv = q.qv / b;
-                return q;
-            }
-            if (b.type == "Quaternion") {
-                let b_ = b.reciprocal();
-                return this * b_;
-            }
-            if (typeof b == "object")
-                console.log(new Error("Error 102: Do not support " + b.type + " and vector for div operations"));
-            else
-                console.log(new Error("Error 102: Do not support " + (typeof b) + " and vector for div operations"));
-            return null;
-        }
-        inverse() {// 加法逆元素
-            return new Quaternion(-this.q0, -this.qv.x, -this.qv.y, -this.qv.z);
-        }
-        conjugate() {// 共轭四元数
-            return new Quaternion(this.q0, -this.qv.x, -this.qv.y, -this.qv.z);
-        }
-        mod() {
-            return Math.sqrt(
-                this.q0 * this.q0 +
-                this.qv.x * this.qv.x +
-                this.qv.y * this.qv.y +
-                this.qv.z * this.qv.z
-            );
-        }
-        mod2() {// 范数平方
-            return this.q0 * this.q0 +
-                this.qv.x * this.qv.x +
-                this.qv.y * this.qv.y +
-                this.qv.z * this.qv.z;
-        }
-        norm() {
-            return this / this.mod();
-        }
-        reciprocal() {// 倒数
-            return this.conjugate() / this.mod2();
-        }
-        static One() {// 乘法恒等元
-            return new Quaternion(1);
-        }
-        static Zero() {// 加法恒等元
-            return new Quaternion();
-        }
-        static RotateLine(v, theta, type) {// type为true是顺时针, 否则为逆时针
-            let V = new Quaternion(0, new Vector3(v));
-            let q = new Quaternion(
-                Math.cos(theta / 2),
-                Math.sin(theta / 2) * V.qv
-            );
-            if (type) {
-                return q * V.qv * q.reciprocal();
-            }
-            return q.reciprocal() * V.qv * q;
-        }
-        static RotateQuaternion(r) {
-            let x = this.__Q_x_theta(r.x);
-            let y = this.__Q_y_theta(r.y);
-            let z = this.__Q_z_theta(r.z);
-            return (z.Q_z_theta * y.Q_y_theta * x.Q_x_theta);
-        }
-        static __Q_x_theta(theta) {
-            let Q_x_theta = new Quaternion(Math.cos(theta / 2), Math.sin(theta / 2), 0, 0);
-            let q_theta = Math.cos(theta / 2), q_v = new Vector3(Math.sin(theta / 2), 0, 0);
-            return {Q_x_theta, q_theta, q_v};
-        }
-        static __Q_y_theta(theta) {
-            let Q_y_theta = new Quaternion(Math.cos(theta / 2), 0, Math.sin(theta / 2), 0);
-            let q_theta = Math.cos(theta / 2), q_v = new Vector3(0, Math.sin(theta / 2), 0);
-            return {Q_y_theta, q_theta, q_v};
-        }
-        static __Q_z_theta(theta) {
-            let Q_z_theta = new Quaternion(Math.cos(theta / 2), 0, 0, Math.sin(theta / 2));
-            let q_theta = Math.cos(theta / 2), q_v = new Vector3(0, 0, Math.sin(theta / 2));
-            return {Q_z_theta, q_theta, q_v};
-        }
-    }
 
     /** todo 提供2D极坐标类 */
         // 2D极坐标: x 代表 r, y 代表 theta
@@ -1069,7 +932,6 @@
     module.define("intersParmlinePlane", intersParmlinePlane);
     module.define("intersSegmentPlane", intersSegmentPlane);
 
-    module.define("Quaternion", Quaternion);
 
     module.define("Polar2D", Polar2D);
     module.define("Cylindrical3D", Cylindrical3D);

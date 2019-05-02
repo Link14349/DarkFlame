@@ -39,6 +39,17 @@ let DarkFlame = (function () {
             return this;
         }
     }
+    class ModuleClass {
+        constructor(type) {
+            this.type = type;
+        }
+        define(attr, value) {
+            this[attr] = value;
+            return this;
+        }
+    }
+    DarkFlame.DarkFlameError = DarkFlameError;
     DarkFlame.Module = Module;
+    DarkFlame.Module.ModuleClass = ModuleClass;
     return DarkFlame;
 })();

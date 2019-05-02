@@ -3,19 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <title>DarkFlame</title>
+    <script type="text/javascript" src="dependencies/lodash/lodash.min.js"></script>
     <script type="text/javascript" src="src/index.js"></script>
+    <script type="text/javascript" src="src/math.js"></script>
     <script type="text/javascript" src="src/scene.js"></script>
     <script type="text/javascript" src="src/camera.js"></script>
+    <script type="text/javascript" src="src/texture.js"></script>
     <script type="text/javascript" src="src/item.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
 <canvas id="canvas"></canvas>
 <script type="text/javascript">
-    let game = new DarkFlame(document.getElementById("canvas"));
+    let canvas = document.getElementById("canvas");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let game = new DarkFlame(canvas);
     let scene = new DarkFlame.Scene.Scene("scene", game);
-    let camera = new DarkFlame.Camera.Camera(DarkFlame.math.Vector3.Zero(), DarkFlame.math.Vector3.Zero(), "camera", scene);
+    let camera = new DarkFlame.Camera.Camera(new DarkFlame.math.Vector3(1, 1, 0), Math.PI / 2, new DarkFlame.math.Vector2(10, 10), "camera", scene);
+    let sprite = new DarkFlame.Item.Sprite(
+        new DarkFlame.Texture.Texture("img/ninja.png"),
+        DarkFlame.math.Vector3.Zero(),
+    );
+    sprite.loadCrashers({
+        points: [
+            [-128, -256], [128, -256],
+            [-128, 256], [128, 256],
+        ],
+        crashers: [
+            {
+                type: "parm",
+                sp: 0, ep: 1
+            },
+            {
+                type: "parm",
+                sp: 1, ep: 3
+            },
+            {
+                type: "parm",
+                sp: 3, ep: 2
+            },
+            {
+                type: "parm",
+                sp: 0, ep: 2
+            },
+        ]
+    });
     game.push(scene);
-    game.render();
+    scene.push(sprite);
+    let ctx = game.ctx;
+    let {width, height} = game.canvas;
+    scene.load(function () {
+        game.whileRender(
+            function FixedUpdate() {
+                ctx.fillStyle = "#33334a";
+                ctx.fillRect(0, 0, width, height);
+                sprite.rotate(Math.PI / 180);
+            },
+            function ViewUpdate() {
+            }
+        );
+    });
+    window.onresize = function () {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    };
 </script>
 </body>
 </html>
